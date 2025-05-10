@@ -2,6 +2,8 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Wifi } from "lucide-react";
 import { scrollToElement } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface RegionCardProps {
   title: string;
@@ -30,32 +32,41 @@ function RegionCard({ title, description, sensors, delay }: RegionCardProps) {
 }
 
 export default function CoverageSection() {
-  const regions = [
-    {
-      title: "Northern Region",
-      description:
-        "Coverage across the Himalayan seismic zone, including major cities like Delhi, Chandigarh, and Dehradun.",
-      sensors: 450,
-    },
-    {
-      title: "Western Region",
-      description:
-        "Kutch and surrounding areas in Gujarat with extended coverage to Mumbai and parts of Maharashtra.",
-      sensors: 350,
-    },
-    {
-      title: "Eastern Region",
-      description:
-        "Coverage across the northeastern states including Assam, Meghalaya, and parts of West Bengal.",
-      sensors: 300,
-    },
-    {
-      title: "Central Region",
-      description:
-        "Narmada-Son lineament and surrounding areas with growing coverage in central India.",
-      sensors: 200,
-    },
-  ];
+  // Fetch regions from the API
+  const { data: regions, isLoading, error } = useQuery({
+    queryKey: ['/api/regions'],
+    // On initial page load, if no regions exist in the database, use default regions
+    initialData: [
+      {
+        id: 1,
+        title: "Northern Region",
+        description:
+          "Coverage across the Himalayan seismic zone, including major cities like Delhi, Chandigarh, and Dehradun.",
+        sensors: 450,
+      },
+      {
+        id: 2,
+        title: "Western Region",
+        description:
+          "Kutch and surrounding areas in Gujarat with extended coverage to Mumbai and parts of Maharashtra.",
+        sensors: 350,
+      },
+      {
+        id: 3,
+        title: "Eastern Region",
+        description:
+          "Coverage across the northeastern states including Assam, Meghalaya, and parts of West Bengal.",
+        sensors: 300,
+      },
+      {
+        id: 4,
+        title: "Central Region",
+        description:
+          "Narmada-Son lineament and surrounding areas with growing coverage in central India.",
+        sensors: 200,
+      },
+    ],
+  });
 
   return (
     <section id="coverage" className="bg-neutral py-20 md:py-28">
@@ -89,15 +100,35 @@ export default function CoverageSection() {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {regions.map((region, index) => (
-            <RegionCard
-              key={index}
-              title={region.title}
-              description={region.description}
-              sensors={region.sensors}
-              delay={index}
-            />
-          ))}
+          {isLoading ? (
+            // Loading skeleton cards
+            Array(4).fill(0).map((_, index) => (
+              <div key={index} className="bg-white p-6 rounded-xl shadow-sm">
+                <Skeleton className="h-7 w-3/4 mb-3" />
+                <Skeleton className="h-20 w-full mb-4" />
+                <div className="flex items-center">
+                  <Skeleton className="h-5 w-5 mr-2" />
+                  <Skeleton className="h-5 w-24" />
+                </div>
+              </div>
+            ))
+          ) : error ? (
+            // Error message
+            <div className="col-span-full text-center">
+              <p className="text-red-500">Error loading regions. Please try again later.</p>
+            </div>
+          ) : (
+            // Display regions
+            regions.map((region, index) => (
+              <RegionCard
+                key={region.id || index}
+                title={region.title}
+                description={region.description}
+                sensors={region.sensors}
+                delay={index}
+              />
+            ))
+          )}
         </div>
 
         <motion.div
