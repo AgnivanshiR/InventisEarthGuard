@@ -41,7 +41,7 @@ export default function Header() {
       <div className="container mx-auto px-6 py-4">
         <div className="flex justify-between items-center">
           <a href="#" className="flex items-center" onClick={() => handleNavClick("home")}>
-            <span className="text-2xl font-semibold text-secondary tracking-tight">
+            <span className="text-2xl font-semibold text-gray-800 tracking-tight">
               Inventis Labs
             </span>
           </a>
@@ -51,7 +51,7 @@ export default function Header() {
               <a
                 key={item.id}
                 href={`#${item.id}`}
-                className="text-secondary hover:text-primary transition-colors"
+                className="text-gray-800 hover:text-primary font-medium transition-colors"
                 onClick={(e) => {
                   e.preventDefault();
                   handleNavClick(item.id);
@@ -63,7 +63,7 @@ export default function Header() {
           </nav>
 
           <button
-            className="md:hidden text-secondary focus:outline-none"
+            className="md:hidden text-gray-800 focus:outline-none"
             onClick={toggleMenu}
             aria-label="Toggle menu"
           >
@@ -86,7 +86,7 @@ export default function Header() {
                 <a
                   key={item.id}
                   href={`#${item.id}`}
-                  className="text-secondary hover:text-primary transition-colors py-2"
+                  className="text-gray-800 hover:text-primary font-medium transition-colors py-2"
                   onClick={(e) => {
                     e.preventDefault();
                     handleNavClick(item.id);
