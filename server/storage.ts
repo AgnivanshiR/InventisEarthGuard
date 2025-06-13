@@ -52,7 +52,10 @@ export class DatabaseStorage implements IStorage {
   async createUser(insertUser: InsertUser): Promise<User> {
     const [user] = await db
       .insert(users)
-      .values(insertUser)
+      .values({
+        ...insertUser,
+        createdAt: new Date().toISOString()
+      })
       .returning();
     return user;
   }
@@ -70,7 +73,10 @@ export class DatabaseStorage implements IStorage {
   async createContactSubmission(submission: InsertContactSubmission): Promise<ContactSubmission> {
     const [newSubmission] = await db
       .insert(contactSubmissions)
-      .values(submission)
+      .values({
+        ...submission,
+        createdAt: new Date().toISOString()
+      })
       .returning();
     return newSubmission;
   }
@@ -109,7 +115,10 @@ export class DatabaseStorage implements IStorage {
     // Create new subscription
     const [newSubscription] = await db
       .insert(newsletterSubscriptions)
-      .values(subscription)
+      .values({
+        ...subscription,
+        createdAt: new Date().toISOString()
+      })
       .returning();
     return newSubscription;
   }
@@ -127,7 +136,10 @@ export class DatabaseStorage implements IStorage {
   async createRegion(region: InsertRegion): Promise<Region> {
     const [newRegion] = await db
       .insert(regions)
-      .values(region)
+      .values({
+        ...region,
+        createdAt: new Date().toISOString()
+      })
       .returning();
     return newRegion;
   }

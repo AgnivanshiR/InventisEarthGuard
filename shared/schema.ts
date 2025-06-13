@@ -1,14 +1,14 @@
-import { pgTable, text, serial, integer, boolean, timestamp, varchar } from "drizzle-orm/pg-core";
+import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { relations } from "drizzle-orm";
 
 // Users table
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
+export const users = sqliteTable("users", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: text("created_at").notNull(),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -16,15 +16,15 @@ export const usersRelations = relations(users, ({ many }) => ({
 }));
 
 // Contact form submissions table
-export const contactSubmissions = pgTable("contact_submissions", {
-  id: serial("id").primaryKey(),
+export const contactSubmissions = sqliteTable("contact_submissions", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   name: text("name").notNull(),
   email: text("email").notNull(),
   subject: text("subject").notNull(),
   message: text("message").notNull(),
-  consent: boolean("consent").notNull().default(true),
+  consent: integer("consent", { mode: "boolean" }).notNull().default(true),
   userId: integer("user_id").references(() => users.id),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: text("created_at").notNull(),
 });
 
 export const contactSubmissionsRelations = relations(contactSubmissions, ({ one }) => ({
@@ -35,20 +35,20 @@ export const contactSubmissionsRelations = relations(contactSubmissions, ({ one 
 }));
 
 // Newsletter subscriptions table
-export const newsletterSubscriptions = pgTable("newsletter_subscriptions", {
-  id: serial("id").primaryKey(),
+export const newsletterSubscriptions = sqliteTable("newsletter_subscriptions", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   email: text("email").notNull().unique(),
-  active: boolean("active").notNull().default(true),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  active: integer("active", { mode: "boolean" }).notNull().default(true),
+  createdAt: text("created_at").notNull(),
 });
 
 // Regions table for coverage areas
-export const regions = pgTable("regions", {
-  id: serial("id").primaryKey(),
-  title: varchar("title", { length: 100 }).notNull(),
+export const regions = sqliteTable("regions", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  title: text("title").notNull(),
   description: text("description").notNull(),
   sensors: integer("sensors").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: text("created_at").notNull(),
 });
 
 // Schema definitions for insertions
